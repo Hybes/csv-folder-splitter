@@ -1,6 +1,6 @@
 {
   "name": "csv-file-splitter",
-  "version": "1.0.5",
+  "version": "1.1.8",
   "description": "Split up some folders I guess",
   "main": "main.js",
   "scripts": {
