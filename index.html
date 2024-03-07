@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>File and Folder Selection</title>
+  <title>CSV File Splitter</title>
+  <link rel="stylesheet" type="text/css" href="output.css"/>
 </head>
-<body>
-  <h1>Select a CSV File and Folder</h1>
-  <input type="file" id="csvFile" accept=".csv" />
-  <input type="file" id="folderInput" webkitdirectory directory multiple />
-  <button id="startProcessing">Start Processing</button>
-
+<body class="bg-stone-900 text-white flex flex-col gap-4 font-mono justify-center items-center p-8">
+  <h1 class="text-2xl text-center">Select a CSV File and Folder</h1>
+  <div class="flex flex-row gap-4">
+    <div class="flex flex-col gap-1">
+      <label for="csvFile">CSV File
+        <input type="file" id="csvFile" accept=".csv" />
+      </label>
+    </div>
+    <div class="flex flex-col gap-1">
+      <label for="folderInput">Folder
+        <input type="file" id="folderInput" webkitdirectory directory multiple />
+      </label>
+    </div>
+  </div>
+  <button class="bg-green-200 hover:bg-green-300 text-stone-900 font-semibold px-4 py-1 mt-4 rounded-full" id="startProcessing">Start Processing</button>
+  <div id="status"></div>
   <script src="renderer.js"></script>
 </body>
 </html>

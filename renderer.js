@@ -1,24 +1,26 @@
 document.getElementById('startProcessing').addEventListener('click', () => {
   try {
-    const csvFileElement = document.getElementById('csvFile');
-    const folderInputElement = document.getElementById('folderInput'); // Move this line up
+    document.getElementById('status').textContent = 'Processing...';
 
-    // Check if files are selected
-    if (!csvFileElement.files.length || !folderInputElement.files.length) {
-      console.error('No file selected');
+    const csvFileElement = document.getElementById('csvFile');
+    const folderInputElement = document.getElementById('folderInput');
+
+    if (!csvFileElement || !csvFileElement.files.length || !folderInputElement || !folderInputElement.files.length) {
+      console.error('No file selected or elements not found');
       return;
     }
-    const csvFilePath = csvFileElement.files[0].path; // Get the path of the selected file
+    const csvFilePath = csvFileElement.files[0].path;
 
-    // The check for folderInputElement.files.length is redundant here since it's checked above
-    // Extract the folder path correctly before this point
+    if (!csvFilePath.endsWith('.csv')) {
+      console.error('Invalid file type. Please select a CSV file.');
+      return;
+    }
+
     const folderPath = folderInputElement.files[0].path.replace(/\/[^\/]*$/, '');
-    console.log('Folder Path:', folderPath);
-    console.log('CSV File Path:', csvFilePath);
 
-    // Assuming folderInputPath should be folderPath based on your context
     window.electron.send('start-processing', { csvFilePath, inputFolder: folderPath});
   } catch (error) {
+    document.getElementById('status').textContent = 'Error...';
     console.error('Error sending start-processing message:', error);
   }
 });
@@ -29,13 +31,13 @@ window.electron.receive('open-directory-dialog', () => {
   });
 });
 
-// Trigger the dialog open
 window.electron.send('open-directory-dialog');
 
 window.electron.receive('processing-complete', (message) => {
-  console.log(message); // Or update the UI accordingly
+  document.getElementById('status').textContent = message.split('\n').pop();
 });
 
 window.electron.receive('processing-error', (error) => {
-  console.error(error); // Or display the error in the UI
+  console.error(error);
+  document.getElementById('status').textContent = 'Error: ' + error;
 });

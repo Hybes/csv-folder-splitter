@@ -2,12 +2,15 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { processFiles } = require('./processFiles'); // Adjust the path as necessary
 const path = require('path');
 
+try {
+  require('electron-reloader')(module)
+} catch (_) {}
+
 ipcMain.on('start-processing', async (event, { csvFilePath, inputFolder }) => {
-  console.log('Received start-processing event', { csvFilePath, inputFolder });
     const sortedFolder = `${inputFolder}-sorted-${Date.now()}`;
   try {
     await processFiles(csvFilePath, inputFolder, sortedFolder);
-    event.reply('processing-complete', 'Success message or relevant data');
+    event.sender.send('processing-complete', 'Done');
   } catch (error) {
     event.reply('processing-error', error.message);
   }
@@ -32,8 +35,7 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: false,
-      contextIsolation: true,
+      nodeIntegration: true
     }
   })
 
@@ -44,6 +46,7 @@ const createWindow = () => {
   // mainWindow.webContents.openDevTools()
 }
 
+app.setName('CSV File Splitter');
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
